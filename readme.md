@@ -64,7 +64,7 @@ Uma vez cumprido os passos presentes em [Pré requisitos](#pré-requisitos), pre
 java -jar antlr-4.9.1-complete.jar -Dlanguage=Python3 LA.g4
 ```
 
-Nenhuma mensagem foi exibida no terminal, mas foram gerados alguns arquivos como `LALexer.py`, `LA.interp`, `LALexer.tokens`, `LAListener.py`, `LALexer.tokens`,
+Nenhuma mensagem foi exibida no terminal, mas foram gerados alguns arquivos como `LALexer.py`, `LA.interp`, `LALexer.tokens`, `LAListener.py`, `LA.tokens` e `LAParser.py`
 
 :+1: Compilação realizada com exito!
 
@@ -87,13 +87,13 @@ O código fonte devidamente comentado desta aplicação se encontra na pasta `sr
 Um exemplo da execução do programa via linha de comando usando caminho absoluto:
 
 ```terminal
-python3 C:/compiladores/compilatores-t1-main/src/main.py C:/compiladores/compilatores-t1-main/src/testes/input/1-algoritmo_2-2_apostila_LA.txt C:/compiladores/compilatores-t1-main/src/testes/output/1-algoritmo_2-2_apostila_LA.txt
+python3 C:/compiladores/compilatores-t2-main/src/main.py C:/compiladores/compilatores-t2-main/src/testes/input/1-algoritmo_2-2_apostila_LA.txt C:/compiladores/compilatores-t2-main/src/testes/output/1-algoritmo_2-2_apostila_LA.txt
 ```
 
 Seguindo as instruções para uso do corretor providas pelo professor, um exemplo de execução deste programa via terminal se dá a seguir:
 
 ```terminal
-java -jar C:/compiladores/compiladores-corretor-automatico-1.0-SNAPSHOT-jar-with-dependencies.jar "python3 C:/compiladores/compiladores-t1-main/src/main.py" gcc C:/compiladores/temp C:/compiladores/casos-de-teste "744342, 727339, 725721" lexico
+java -jar C:/compiladores/compiladores-corretor-automatico-1.0-SNAPSHOT-jar-with-dependencies.jar "python3 C:/compiladores/compiladores-t2-main/src/main.py" gcc C:/compiladores/temp C:/compiladores/casos-de-teste "744342, 727339, 725721" sintatico
 ```
 
 ## Autores

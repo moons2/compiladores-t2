@@ -1,7 +1,7 @@
 '''
 titulo:
-    Analisador Lexico para a Linguagem Algoritmica(LA)
-    TRABALHO 1 - COMPILADORES 1
+    Analisador Sintático para a Linguagem Algoritmica(LA)
+    TRABALHO 2 - COMPILADORES 1
 
 autores:
     Luan V. Moraes da Silva - 744342
@@ -9,7 +9,7 @@ autores:
     Alisson Roberto Gomes - 725721
 
 para compilar:
-    > java -jar antlr-4.9.1-complete.jar -Dlanguage=Python3 LALexer.g4
+    > java -jar antlr-4.9.1-complete.jar -Dlanguage=Python3 LA.g4
 
 para executar:
     > [python | python3] main.py input-program.txt output-program.txt
@@ -19,42 +19,45 @@ para executar:
 from antlr4 import *
 from LALexer import LALexer
 from LAParser import LAParser
-# from antlr4.error.ErrorListener import ErrorListener
 import sys
 import os
 
 
+'''
+Tratamento de erros lexicos em tempo de execucap
+'''
+
+
 class LexicoErroListener(object):
     def syntaxError(recognizer, offendingSymbol, line, column, msg, e):
-        # Caso de caractere não reconhecido
-        text = recognizer._input.getText(
+
+        token_type = recognizer._input.getType(
             recognizer._tokenStartCharIndex, recognizer._input.index)
-        text = text.strip().rstrip('\n')
-        return_msg = 'simbolo nao identificado'
 
-        # Em caso de comentario não fechado
-        if text[0] == '{' and len(text) > 1:
-            raise Exception(f'Linha {line}: comentario nao fechado')
-        # Em caso de cadeia literal não fechada, de acordo com a definição da gramática
-        elif text[0] == '"' and len(text) > 1:
-            raise Exception(f'Linha {line}: cadeia literal nao fechada')
-
-        raise Exception(f'Linha {line}: {text} - {return_msg}')
+        errs = ['ERR_COMENT', 'ERR_CADEIA', 'ERR_SIMBOLO']
+        if token_type in errs:
+            # se pertencer, entao eu trato o erro de acordo com o especificado
+            if token_type == errs[2]:
+                raise Exception(
+                    f'Linha {line}: {text} - simbolo nao identificado')
+            elif token_type == errs[1]:
+                raise Exception(f'Linha {line}: cadeia literal nao fechada')
+            else:
+                raise Exception(f'Linha {line}: comentario nao fechado')
 
 
 '''
-Parser Error Listener
+Parser para erros semanticos em tempo de execucao
 '''
 
 
 class ParserErroListener(object):
     def syntaxError(recognizer, offendingSymbol, line, column, msg, e):
-        if "EOF" in offendingSymbol.text:  # No Python, o ANTLR4 força "<EOF>" e não somente "EOF"
+        if "EOF" in offendingSymbol.text:
             offendingSymbol.text = "EOF"
 
-        # Em caso de erro sintático encontrado.
-        raise Exception(
-            f'Linha {line}: erro sintatico proximo a {offendingSymbol.text}')
+        msg = f'Linha {line}: erro sintatico proximo a {offendingSymbol.text}'
+        raise Exception(msg)
 
 # funcao principal
 # params: argv, uma lista com as entradas obtidas da linha de comando
@@ -79,53 +82,28 @@ def main(argv):
     # metodo da lib antlr4 que le um arquivo
     input_stream = FileStream(input_file, encoding="utf-8")
 
+    # variavel que sera atribuida ao arquivo destino
     output = ""
 
     # objeto Lexer criado
     lexer = LALexer(input_stream)
-    # lexer.addErrorListener(LexicoErroListener)
 
-    stream = CommonTokenStream(lexer)
-    parser = LAParser(stream)
+    # por garantia
+    lexer.removeErrorListeners()
+
+    lexer.addErrorListener(LexicoErroListener)
+
+    tokens = CommonTokenStream(lexer)
+    parser = LAParser(tokens)
+
+    # sobrescrevo o ErroListener default
     parser.addErrorListener(ParserErroListener)
+
+    # o equivalente de parser.programa() em java
     try:
         parser.programa()
     except Exception as err:
         output += f'{str(err)}\n'
-    # variavel que sera atribuida ao arquivo destino
-
-    # token_list guarda todos os tokens encontrados pos
-    # analise do arquivo destino pelo analisador lexico
-    # token_list = lexer.getAllTokens()
-
-    # list_exceptions = ['PALAVRA_RESERVADA', 'DELIMITADOR', 'DECLARADOR', 'OP_RELACIONAL', 'OP_ARIT', 'OP_UNARIO', 'ATRIBUIDOR', 'OUTRO_OP', 'OP_LOGICO']
-
-    # errs = ['ERR_COMENT', 'ERR_CADEIA', 'ERR_SIMBOLO']
-
-    # loop que percorre a lista de tokens gerados pelo
-    # analisador lexico retornado em lexer.getAllTokens()
-    # for token in token_list:
-
-        # obtencao do nome da regra do token
-        # token_rule_name = LALexer.symbolicNames[token.type]
-
-        # verificacao se a regra pertence a um dos erros
-        # if token_rule_name in errs:
-        # se pertencer, entao eu trato o erro de acordo com o especificado
-        # if token_rule_name == errs[2]:
-        #    output += f'Linha {token.line}: {token.text} - simbolo nao identificado\n'
-        # elif token_rule_name == errs[1]:
-        #    output += f'Linha {token.line}: cadeia literal nao fechada\n'
-        # else:
-        #    output += f'Linha {token.line}: comentario nao fechado\n'
-
-        # existe_erro_lexico = True
-        # break
-
-        # if token_rule_name in list_exceptions:
-        #    output += f'<\'{token.text}\',\'{token.text}\'>\n'
-        # else:
-        #    output += f'<\'{token.text}\',{token_rule_name}>\n'
 
     output += f'Fim da compilacao\n'
 
