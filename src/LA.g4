@@ -1,13 +1,13 @@
 // titulo:
 //    Gramatica regular da Linguagem Algoritmica(LA)
-//    TRABALHO 1 - COMPILADORES 1
+//    TRABALHO 2 - COMPILADORES 1
 //
 // autores:
 //    Luan V. Moraes da Silva - 744342
 //    Guilherme Servidoni - 727339
 //    Alisson Roberto Gomes - 725721
     
-grammar LA; // alteracao 1
+grammar LA;
 
 fragment
 LETRA: 'A'..'Z' | 'a'..'z';
@@ -59,7 +59,8 @@ CADEIA: '"' ( '\\"' | ~('"' | '\\' | '\n') )* '"';
 // simbolo nao identificado
 ERR_SIMBOLO: . ;
 
-/* definições da gramática */
+// definicoes da gramatica conforme fornecido
+
 programa: declaracoes 'algoritmo' corpo 'fim_algoritmo';
 declaracoes: (decl_local_global)*;
 decl_local_global: declaracao_local | declaracao_global;
@@ -103,7 +104,7 @@ exp_aritmetica: termo (op1 termo)*;
 termo: fator (op2 fator)*;
 fator: parcela (op3 parcela)*;
 
-/* define os operadores aritméticos */
+// operadores aritméticos
 op1: '+' | '-';
 op2: '*' | '/';
 op3: '%';
@@ -114,7 +115,7 @@ parcela_unario: ('^')? identificador | IDENT '(' expressao (',' expressao)* ')' 
 parcela_nao_unario: '&' identificador | CADEIA;
 exp_relacional: exp_aritmetica (op_relacional exp_aritmetica)?;
 
-/* define os operadores relacionais */
+// define os operadores relacionais
 op_relacional: '=' | '<>' | '>=' | '<=' | '>' | '<';
 
 expressao: termo_logico (op_logico_1 termo_logico)*;
@@ -122,6 +123,6 @@ termo_logico: fator_logico (op_logico_2 fator_logico)*;
 fator_logico: ('nao')? parcela_logica;
 parcela_logica: ('verdadeiro' | 'falso') | exp_relacional;
 
-/* define os operadores lógicos */
+// define os operadores lógicos
 op_logico_1: 'ou';
 op_logico_2: 'e';
