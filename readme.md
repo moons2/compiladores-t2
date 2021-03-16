@@ -53,7 +53,7 @@ java -version
 faça o download deste repositorio clicando em **code > Download Zip** e descompate em um diretorio local ou através do terminal com:
 
 ```terminal
-git clone https://github.com/moons2/compiladores-t1
+git clone https://github.com/moons2/compiladores-t2
 ```
 
 ## Compilação
@@ -64,13 +64,13 @@ Uma vez cumprido os passos presentes em [Pré requisitos](#pré-requisitos), pre
 java -jar antlr-4.9.1-complete.jar -Dlanguage=Python3 LA.g4
 ```
 
-Nenhuma mensagem foi exibida no terminal, mas foram gerados alguns arquivos como `LALexer.py`, `LA.interp`, `LALexer.tokens`, `LAListener.py`, `LA.tokens` e `LAParser.py`
+Nenhuma mensagem foi exibida no terminal, mas foram gerados alguns arquivos como `LALexer.py`, `LA.interp`, `LALexer.tokens`, `LAListener.py`, `LA.tokens`, e `LAParser.py`
 
 :+1: Compilação realizada com exito!
 
 ## Execução
 
-Por fim, para executar nosso analisador léxico basta inserir o seguinte comando no terminal:
+Por fim, para executar nosso analisador sintático basta inserir o seguinte comando no terminal:
 
 ```terminal
 python3 main.py path_arquivo_entrada.txt path_arquivo_saida.txt
