@@ -30,20 +30,22 @@ Tratamento de erros lexicos em tempo de execucap
 
 class LexicoErroListener(object):
     def syntaxError(recognizer, offendingSymbol, line, column, msg, e):
-
-        token_type = recognizer._input.getType(
+        # Caso de caractere não reconhecido
+        text = recognizer._input.getText(
             recognizer._tokenStartCharIndex, recognizer._input.index)
+        # O texto não é tratado em caso de erro (espaços e outros caracteres são mantidos)
 
-        errs = ['ERR_COMENT', 'ERR_CADEIA', 'ERR_SIMBOLO']
-        if token_type in errs:
-            # se pertencer, entao eu trato o erro de acordo com o especificado
-            if token_type == errs[2]:
-                raise Exception(
-                    f'Linha {line}: {text} - simbolo nao identificado')
-            elif token_type == errs[1]:
-                raise Exception(f'Linha {line}: cadeia literal nao fechada')
-            else:
-                raise Exception(f'Linha {line}: comentario nao fechado')
+        text = text.replace('\n', '')
+
+        # Em caso de comentario não fechado
+        if text[0] == '{' and len(text) > 1:
+            raise Exception(f'Linha {line}: comentario nao fechado')
+
+        # Em caso de cadeia literal não fechada, de acordo com a definição da gramática
+        elif text[0] == '"' and len(text) > 1:
+            raise Exception(f'Linha {line}: cadeia literal nao fechada')
+
+        raise Exception(f'Linha {line}: {text} - simbolo nao identificado')
 
 
 '''
@@ -57,6 +59,7 @@ class ParserErroListener(object):
             offendingSymbol.text = "EOF"
 
         msg = f'Linha {line}: erro sintatico proximo a {offendingSymbol.text}'
+
         raise Exception(msg)
 
 # funcao principal
@@ -65,6 +68,10 @@ class ParserErroListener(object):
 
 
 def main(argv):
+
+    if (len(argv) < 2):
+        print("O comando deve obrigatoriamente ter dois argumentos!\n")
+
     # guarda argumento 1
     input_file = argv[1]
 
@@ -91,13 +98,14 @@ def main(argv):
     # por garantia
     lexer.removeErrorListeners()
 
-    lexer.addErrorListener(LexicoErroListener)
+    lexer._listeners = [LexicoErroListener]
+    # lexer.addErrorListener(LexicoErroListener)
 
     tokens = CommonTokenStream(lexer)
     parser = LAParser(tokens)
 
     # sobrescrevo o ErroListener default
-    parser.addErrorListener(ParserErroListener)
+    parser._listeners = [ParserErroListener]
 
     # o equivalente de parser.programa() em java
     try:

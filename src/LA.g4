@@ -16,12 +16,12 @@ fragment
 DIGITO: '0'..'9';
 
 // definicao de erro de comentario
-ERR_COMENT: ('{' ~('}')* '\n');
+// ERR_COMENT: ('{' ~('}')* '\n');
 
 COMENTARIO: '{' ~('\n'|'\r'|'{'|'}')* '}' -> skip;
 
 // definicao de erro de cadeia
-ERR_CADEIA: '"' ~('"')* '\n';
+// ERR_CADEIA: '"' ~('"')* '\n';
 
 WS: (' ' | '\t' | '\n' | '\r') -> skip;
 
@@ -57,7 +57,7 @@ NUM_REAL: (DIGITO)+ '.' (DIGITO)+;
 CADEIA: '"' ( '\\"' | ~('"' | '\\' | '\n') )* '"';
 
 // simbolo nao identificado
-ERR_SIMBOLO: . ;
+// ERR_SIMBOLO: . ;
 
 // definicoes da gramatica conforme fornecido
 
